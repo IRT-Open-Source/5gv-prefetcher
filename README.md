@@ -8,7 +8,7 @@ Requests content from a caching server in order to make the caching server cache
 
 ## What is this?
 
-The Prefetcher service is part of the [platform](../../../5gv-platform) for media caching on trains. The Prefetcher requests from the Online [Cache](../../../5gv-cache) content which is reported to be missing in the Online Cache. As the Online Cache operates in reverse proxy mode, it will cache the requested content. Subsequent request to the content will be responded to with the cached content. Missing state is reported by the [Cache Monitor](h../../../5gv-cache-monitor) to the [State API](../../../5gv-state-api) from where the Prefetcher retrieves a list of the missing videos.
+The Prefetcher service is part of the [platform](../../../5gv-platform) for media caching on trains. The Prefetcher requests from the Online [Cache](../../../5gv-cache) content which is reported to be missing in the Online Cache. As the Online Cache operates in reverse proxy mode, it will cache the requested content. Subsequent request to the content will be responded to with the cached content. Missing state is reported by the [Cache Monitor](../../../5gv-cache-monitor) to the [State API](../../../5gv-state-api) from where the Prefetcher retrieves a list of the missing videos.
 
 ## How does it work?
 
