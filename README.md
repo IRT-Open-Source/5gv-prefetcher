@@ -8,15 +8,15 @@ Requests content from a caching server in order to make the caching server cache
 
 ## What is this?
 
-The Prefetcher service is part of the [platform](https://gitlab.irt.de/5g-victori/platform) for media caching on trains. The Prefetcher requests from the Online [Cache](https://gitlab.irt.de/5g-victori/cache) content which is reported to be missing in the Online Cache. As the Online Cache operates in reverse proxy mode, it will cache the requested content. Subsequent request to the content will be responded to with the cached content. Missing state is reported by the [Cache Monitor](https://gitlab.irt.de/5g-victori/cache-monitor) to the [State API](https://gitlab.irt.de/5g-victori/state-api) from where the Prefetcher retrieves a list of the missing videos.
+The Prefetcher service is part of the [platform](../../../5gv-platform) for media caching on trains. The Prefetcher requests from the Online [Cache](../../../5gv-cache) content which is reported to be missing in the Online Cache. As the Online Cache operates in reverse proxy mode, it will cache the requested content. Subsequent request to the content will be responded to with the cached content. Missing state is reported by the [Cache Monitor](h../../../5gv-cache-monitor) to the [State API](../../../5gv-state-api) from where the Prefetcher retrieves a list of the missing videos.
 
 ## How does it work?
 
-The below diagram illustrates the main software modules of the Prefetcher. The core logic module controls the service processes. atVia the [Message Streamer Client](https://gitlab.irt.de/5g-victori/messenger) it sets listeners for messages that inform of new cache states as well as of new configurations of the [Aggregator](https://gitlab.irt.de/5g-victori/aggregator).
+The below diagram illustrates the main software modules of the Prefetcher. The core logic module controls the service processes. atVia the [Message Streamer Client](../../../5gv-messenger) it sets listeners for messages that inform of new cache states as well as of new configurations of the [Aggregator](../../../5gv-aggregator).
 
 ![Architecture of the Pefetcher service](https://docs.google.com/drawings/d/14Fp6Uh5ANOHJsuxn-eVHblYvyGa242fy4-nRYrfxVqI/export/svg)
 
-When the core logic module receives the message that a new cache state has been initialised, it loads information about the missing media items from the [State API](https://gitlab.irt.de/5g-victori/state-api) via the HTTP Client. From the media items' resource locations, the core logic module creates a Request List (implemented in `request-map.ts`). The Request List module sends requests via the HTTP Client module. For received responses it evaluates the HTTP status codes. It counts how often a certain status code has occurred for a certain request. If a limit value is exceeded, the request is deleted from the list. Limit values can be configured in a rule set. For example, it is useful to configure that `404` should only occur once, because it is unlikely that the resource will suddenly be available at the corresponding address on the next request. For a `500` status code, however, it can be useful to allow multiple attempts. Requests with a response status that indicates success are also deleted from the Request List. If the Request List is empty, the Core Logic module again queries the missing media items from the State API. This is necessary because even if all requests of the prefetcher were answered with success indicating status codes like `200`, corresponding media items still might be missing in the cache, for example because the download failed or because the media item was overwritten by a more recent entry in the cache. With the received media items, the core logic module instantiates a new Request List. The below figure shows this process as a sequence diagram.
+When the core logic module receives the message that a new cache state has been initialised, it loads information about the missing media items from the [State API](../../../5gv-state-api) via the HTTP Client. From the media items' resource locations, the core logic module creates a Request List (implemented in `request-map.ts`). The Request List module sends requests via the HTTP Client module. For received responses it evaluates the HTTP status codes. It counts how often a certain status code has occurred for a certain request. If a limit value is exceeded, the request is deleted from the list. Limit values can be configured in a rule set. For example, it is useful to configure that `404` should only occur once, because it is unlikely that the resource will suddenly be available at the corresponding address on the next request. For a `500` status code, however, it can be useful to allow multiple attempts. Requests with a response status that indicates success are also deleted from the Request List. If the Request List is empty, the Core Logic module again queries the missing media items from the State API. This is necessary because even if all requests of the prefetcher were answered with success indicating status codes like `200`, corresponding media items still might be missing in the cache, for example because the download failed or because the media item was overwritten by a more recent entry in the cache. With the received media items, the core logic module instantiates a new Request List. The below figure shows this process as a sequence diagram.
 
 ![Diagram of fetch cycle](doc/images/fetch-cycle.svg)
 
@@ -24,7 +24,7 @@ If the core logic module receives a message that a new aggregator configuration 
 
 ## Install, build, run
 
-**Note:** _Typically you would use the `up.sh` script from the [Platform](https://gitlab.irt.de/5g-victori/platform) project to install, build and run this service as part of a composite of docker services. Read on if you intend to run the service directly on your host system._
+**Note:** _Typically you would use the `up.sh` script from the [Platform](../../../5gv-platform) project to install, build and run this service as part of a composite of docker services. Read on if you intend to run the service directly on your host system._
 
 **Prerequestits**: Following software needs to be installed on your host machine in order to execute the subsequent steps.
 
@@ -50,7 +50,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-With following command you can build a [docker image](https://www.docker.com) for this service. But again, typically you use the startup script `up.sh` of the [Platform](https://gitlab.irt.de/5g-victori/platform) project to do the job.
+With following command you can build a [docker image](https://www.docker.com) for this service. But again, typically you use the startup script `up.sh` of the [Platform](../../../5gv-platform) project to do the job.
 
 ```bash
 $ DOCKER_BUILDKIT=1 docker build --ssh gitlab="$HOME/.ssh/<<your_private_key_name>>" -t prefetcher .
