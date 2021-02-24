@@ -26,7 +26,7 @@
     "@nestjs/platform-express": "^6.11.11",
     "bluebird": "^3.7.2",
     "command-line-args": "^5.1.1",
-    "messenger": "git+ssh://git@github.com/IRT-Open-Source/5gv-messenger.git",
+    "messenger": "git+https://git@github.com/IRT-Open-Source/5gv-messenger.git",
     "node-nats-streaming": "^0.2.6",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
