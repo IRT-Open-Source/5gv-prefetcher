@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.NATS,
     options: {
-      url: 'nats://message-broker:4222',
+      url: 'nats://5gv-message-broker:4222',
     },
   });
   app.listen(() => {
